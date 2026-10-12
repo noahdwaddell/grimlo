@@ -54,6 +54,34 @@ Click Grimlo to open the chat bar, type any command, and press **Enter**:
 | `Esc` | Closes the chat bar |
 
 
+## 🔒 Privacy & Data Usage
+
+Grimlo is completely open source, client-side software designed with privacy and transparency in mind. **Grimlo has no middleman servers, no analytics, no telemetry, and no tracking.** The app never "phones home" to the developers or any third-party analytics service.
+
+All external network communication is strictly **direct from your machine to your chosen AI provider** (Google Gemini, Anthropic Claude, or OpenAI) over secure HTTPS using your personal API key.
+
+Here is a full breakdown of what data leaves your machine, when it leaves, and where it goes:
+
+| Data Type | When It Is Sent | Where It Goes | Can It Be Disabled? |
+|---|---|---|---|
+| **Chat Prompts & History** | When you submit a message in the chat bar | Directly to your selected AI provider (Google, Anthropic, or OpenAI) | Wiped anytime with `/clear` |
+| **Desktop Screenshots** | **Only** when you explicitly execute `/look` | Directly to your selected AI provider as multimodal vision input | Yes — never triggered automatically; only runs on explicit user command |
+| **Active Window Title & Process** | When you run `/judge`, or periodically during ambient idle reactions (if enabled) | Directly to your selected AI provider to generate commentary | Yes — disable ambient checks in **Settings ➔ Behavior ➔ Enable Window Reactions** |
+| **Media Track Info** | When you run `/listen` | Directly to your selected AI provider to critique current music | Yes — runs only when `/listen` is invoked |
+
+### 🖥️ What Stays 100% Local (Never Sent Anywhere)
+- **Text-to-Speech (TTS):** Uses the built-in offline Windows SAPI synthesizer (`System.Speech`). Your text is never sent to a cloud TTS service.
+- **Sound Effects & Physics:** All retro audio SFX, character animations, drag physics, pacing, and sleep cycles run entirely on your local CPU/GPU.
+- **System Diagnostics:** Battery percentages, power status, and clock checks are evaluated locally using standard Windows APIs for canned dialogue triggers (such as low battery alerts).
+
+### 🔑 API Key Security
+- Your API keys are saved locally on your computer at `%APPDATA%\Grimlo\settings.json`.
+- Keys are encrypted using the **Windows Data Protection API (DPAPI)** under your current Windows user account (`DataProtectionScope.CurrentUser`). They cannot be decrypted by other user accounts or transferred to other machines.
+- Keys are only used to authenticate direct HTTPS requests to the official provider endpoints (`generativelanguage.googleapis.com`, `api.anthropic.com`, or `api.openai.com`).
+- Error messages suppress raw server response bodies to prevent API keys or internal headers from being displayed in chat speech bubbles.
+- You can remove your API key anytime in **Settings ➔ AI Brain**.
+
+
 ## 🛠️ Building & Packaging from Source
 
 ### Prerequisites
