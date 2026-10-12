@@ -8,7 +8,6 @@ An eccentric, melodramatic desktop gremlin who floats over your windows, talks o
 
 Think Bonzi Buddy, minus the spyware, the toolbars, and the lawsuits.
 
----
 
 ## ✨ Features
 
