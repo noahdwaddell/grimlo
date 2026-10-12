@@ -24,7 +24,6 @@ Think Bonzi Buddy, minus the spyware, the toolbars, and the lawsuits.
 - **Clean Chat Bar & Slash Commands**: Toggle chat with a single click (or Esc to dismiss), with support for `/look`, `/judge`, `/listen`, `/wander`, `/sleep`, `/tap`, `/shake`, and `/help`.
 - **System Tray Integration**: Minimize Grimlo to the system tray, toggle topmost, mute, or quit anytime.
 
----
 
 ## 🚀 Quick Start (Pre-built Release)
 
@@ -34,7 +33,6 @@ Think Bonzi Buddy, minus the spyware, the toolbars, and the lawsuits.
 
 > **Free API Key**: You can get a free Google Gemini API key at [aistudio.google.com/api-keys](https://aistudio.google.com/api-keys). Paste it into Grimlo's Settings ➔ AI Brain tab!
 
----
 
 ## 💬 Chat Slash Commands
 
@@ -55,7 +53,6 @@ Click Grimlo to open the chat bar, type any command, and press **Enter**:
 | `/help` | Speaks a summary of available tools |
 | `Esc` | Closes the chat bar |
 
----
 
 ## 🛠️ Building & Packaging from Source
 
@@ -79,7 +76,6 @@ To create a self-contained single-file bundle that includes the .NET runtime:
 .\package.ps1 -SelfContained
 ```
 
----
 
 ## 📜 License
 
