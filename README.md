@@ -2,7 +2,7 @@
   <img src="assets/grimlo_banner.png" alt="Grimlo the Desktop Gremlin" width="720" />
 </p>
 
-# 🧙‍♂️ Grimlo the Desktop Gremlin
+# Meet Grimlo the Desktop Gremlin!
 
 An eccentric, melodramatic desktop gremlin who floats over your windows, talks out loud, critiques your computer habits, and chats using Google Gemini, Claude, or OpenAI.
 
