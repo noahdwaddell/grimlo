@@ -1,0 +1,28 @@
+# Build output
+bin/
+obj/
+dist/
+*.mp4
+**/bin/
+**/obj/
+
+# Visual Studio / VS Code / Rider
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Secrets: never commit API keys
+.env
+.env.*
+*.secrets.json
+secrets.json
+appsettings.Development.json
+appsettings.Local.json
+
+# Misc
+*.log
+*.swp
+Thumbs.db
+.DS_Store

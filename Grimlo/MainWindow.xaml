@@ -1,0 +1,308 @@
+<Window x:Class="Grimlo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Grimlo"
+        Width="280" Height="450"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        WindowStartupLocation="Manual"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        MouseMove="Window_MouseMove"
+        MouseLeftButtonUp="Window_MouseLeftButtonUp">
+
+    <!-- WindowStyle=None + AllowsTransparency + Background=Transparent is the trick that
+         makes the window invisible so only Grimlo and his speech bubble show up.
+         Fully transparent pixels let clicks pass through to whatever is underneath. -->
+
+    <!-- The window is a FIXED size and never resizes. Row 0 is reserved space for the
+         speech bubble, row 1 is Grimlo, row 2 is reserved space for the chat box.
+         Showing or hiding the bubble/chat box just fills or empties that space, so
+         Grimlo never moves. -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="150" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="75" />
+        </Grid.RowDefinitions>
+
+        <!-- Right-click Grimlo for this menu -->
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Chat with Grimlo" Click="ChatMenu_Click" />
+                <MenuItem Header="Say something" Click="SayMenu_Click" />
+                <MenuItem Header="🔨 Tap the glass" Click="TapTheGlassMenu_Click" />
+                <MenuItem Header="🌀 Shake Grimlo" Click="ShakeMenu_Click" />
+                <MenuItem Header="💤 Put to sleep" Click="PutToSleepMenu_Click" />
+                <Separator />
+                <MenuItem Header="❓ Help &amp; Commands" Click="HelpMenu_Click" />
+                <MenuItem Header="Clear memory" Click="ClearMemory_Click" />
+                <MenuItem Header="Hide to Tray" Click="HideToTrayMenu_Click" />
+                <Separator />
+                <MenuItem Header="Settings..." Click="SettingsMenu_Click" />
+                <MenuItem Header="Quit Grimlo" Click="Quit_Click" />
+            </ContextMenu>
+        </Grid.ContextMenu>
+
+        <!-- Speech bubble (hidden until Grimlo talks). Sits at the bottom of its row,
+             right above Grimlo's head, and grows upward as the text gets longer. -->
+        <Border x:Name="Bubble"
+                Grid.Row="0"
+                Visibility="Collapsed"
+                VerticalAlignment="Bottom"
+                MaxHeight="144"
+                Background="White"
+                BorderBrush="#222222"
+                BorderThickness="2"
+                CornerRadius="12"
+                Padding="10,6"
+                Margin="10,0,10,6"
+                PreviewMouseWheel="Bubble_PreviewMouseWheel">
+            <Grid>
+                <!-- Close Button in top right of speech bubble -->
+                <Button x:Name="CloseBubbleButton"
+                        Content="✕"
+                        Click="CloseBubbleButton_Click"
+                        ToolTip="Close Bubble (Speech continues)"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Width="18" Height="18"
+                        Margin="0,-2,-4,0"
+                        Padding="0"
+                        FontSize="10"
+                        FontWeight="Bold"
+                        Foreground="#888888"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        Panel.ZIndex="10">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="9">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#EEEEEE" />
+                                                <Setter Property="Foreground" Value="#E53935" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <ScrollViewer x:Name="BubbleScroller"
+                              VerticalScrollBarVisibility="Hidden"
+                              HorizontalScrollBarVisibility="Disabled"
+                              Focusable="False"
+                              Margin="0,0,12,0">
+                    <TextBlock x:Name="BubbleText"
+                               TextWrapping="Wrap"
+                               FontFamily="Comic Sans MS"
+                               FontSize="14"
+                               UseLayoutRounding="False"
+                               TextOptions.TextFormattingMode="Ideal"
+                               TextOptions.TextRenderingMode="Auto">
+                        <TextBlock.RenderTransform>
+                            <TranslateTransform x:Name="BubbleTextTransform" />
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
+        <!-- Grimlo layered art rig from Assets/rig/. Positions and sizes match 813x691 coordinates;
+             the Viewbox scales cleanly to fit within the window. -->
+        <Viewbox x:Name="GrimloRigViewbox" Grid.Row="1" Width="260"
+                 HorizontalAlignment="Center" VerticalAlignment="Top"
+                 Margin="0,0,0,4" Stretch="Uniform"
+                 RenderOptions.BitmapScalingMode="HighQuality">
+            <Viewbox.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform x:Name="GlassTapScale" CenterX="130" CenterY="130" ScaleX="1.0" ScaleY="1.0" />
+                    <TranslateTransform x:Name="GlassTapTranslate" X="0" Y="0" />
+                    <RotateTransform x:Name="WanderTilt" CenterX="130" CenterY="220" Angle="0" />
+                </TransformGroup>
+            </Viewbox.RenderTransform>
+            <Canvas Width="813" Height="691">
+
+                <Canvas.RenderTransform>
+                    <TranslateTransform x:Name="BobTransform" />
+                </Canvas.RenderTransform>
+
+                <!-- Idle animation: gentle up-and-down bob, forever -->
+                <Canvas.Triggers>
+                    <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="BobTransform"
+                                                 Storyboard.TargetProperty="Y"
+                                                 From="0" To="-16"
+                                                 Duration="0:0:1.0"
+                                                 AutoReverse="True"
+                                                 RepeatBehavior="Forever">
+                                    <DoubleAnimation.EasingFunction>
+                                        <SineEase EasingMode="EaseInOut" />
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Canvas.Triggers>
+
+                <!-- Back to front: ears (behind head), head base, eyes, mouth states, lids -->
+                <Image Source="Assets/rig/ear_left.png" Canvas.Left="83" Canvas.Top="243" Width="156" Height="192" Stretch="Fill">
+                    <Image.RenderTransform><RotateTransform x:Name="EarLeftRot" CenterX="142" CenterY="117" /></Image.RenderTransform>
+                </Image>
+                <Image Source="Assets/rig/ear_right.png" Canvas.Left="586" Canvas.Top="254" Width="155" Height="176" Stretch="Fill">
+                    <Image.RenderTransform><RotateTransform x:Name="EarRightRot" CenterX="11" CenterY="106" /></Image.RenderTransform>
+                </Image>
+                <Image Source="Assets/rig/base.png" Canvas.Left="0" Canvas.Top="0" Width="813" Height="691" Stretch="Fill" />
+
+                <!-- Left eye: eyeball + pupil. Hidden during blink; pupil slides to glance around. -->
+                <Canvas x:Name="EyeLeftGroup" Canvas.Left="297" Canvas.Top="210" Width="65" Height="65">
+                    <Canvas.RenderTransform><ScaleTransform x:Name="EyeLeftScale" CenterX="32" CenterY="32" /></Canvas.RenderTransform>
+                    <Image Source="Assets/rig/eye_left.png" Width="65" Height="65" Stretch="Fill" />
+                    <Image Source="Assets/rig/pupil_left.png" Canvas.Left="14" Canvas.Top="15" Width="35" Height="38" Stretch="Fill">
+                        <Image.RenderTransform><TranslateTransform x:Name="PupilLeftShift" /></Image.RenderTransform>
+                    </Image>
+                </Canvas>
+
+                <!-- Right eye: eyeball + pupil. Hidden during blink; pupil slides to glance around. -->
+                <Canvas x:Name="EyeRightGroup" Canvas.Left="448" Canvas.Top="216" Width="65" Height="65">
+                    <Canvas.RenderTransform><ScaleTransform x:Name="EyeRightScale" CenterX="32" CenterY="32" /></Canvas.RenderTransform>
+                    <Image Source="Assets/rig/eye_right.png" Width="65" Height="65" Stretch="Fill" />
+                    <Image Source="Assets/rig/pupil_right.png" Canvas.Left="14" Canvas.Top="13" Width="39" Height="40" Stretch="Fill">
+                        <Image.RenderTransform><TranslateTransform x:Name="PupilRightShift" /></Image.RenderTransform>
+                    </Image>
+                </Canvas>
+
+                <!-- Mouth states. Only one is visible at a time during speech. When all are collapsed,
+                     the original grin baked into base.png is visible. -->
+                <Image x:Name="MouthSlight" Source="Assets/rig/mouth_slight.png" Canvas.Left="240" Canvas.Top="415" Width="331" Height="200" Stretch="Fill" Visibility="Collapsed" />
+                <Image x:Name="MouthMid" Source="Assets/rig/mouth_mid.png" Canvas.Left="240" Canvas.Top="415" Width="331" Height="200" Stretch="Fill" Visibility="Collapsed" />
+                <Image x:Name="MouthWide" Source="Assets/rig/mouth_wide.png" Canvas.Left="240" Canvas.Top="415" Width="331" Height="200" Stretch="Fill" Visibility="Collapsed" />
+                <Image x:Name="MouthRound" Source="Assets/rig/mouth_round.png" Canvas.Left="240" Canvas.Top="415" Width="331" Height="200" Stretch="Fill" Visibility="Collapsed" />
+                <Image x:Name="MouthGrin" Source="Assets/rig/mouth_grin.png" Canvas.Left="240" Canvas.Top="415" Width="331" Height="200" Stretch="Fill" Visibility="Collapsed" />
+                <Image x:Name="MouthClosed" Source="Assets/rig/mouth_closed.png" Canvas.Left="240" Canvas.Top="415" Width="331" Height="200" Stretch="Fill" Visibility="Collapsed" />
+
+                <!-- Drawn closed eyelids, shown for a blink while the open eyes are hidden -->
+                <Image x:Name="LidLeft" Source="Assets/rig/lid_left.png" Canvas.Left="288" Canvas.Top="229" Width="85" Height="27" Stretch="Fill" Visibility="Collapsed" />
+                <Image x:Name="LidRight" Source="Assets/rig/lid_right.png" Canvas.Left="439" Canvas.Top="236" Width="84" Height="25" Stretch="Fill" Visibility="Collapsed" />
+
+                <!-- Sleeping / Snoring Zzz bubbles (shown only during deep sleep) -->
+                <Canvas x:Name="ZzzSleepContainer" Canvas.Left="520" Canvas.Top="120" Width="180" Height="140" Visibility="Collapsed" Opacity="0">
+                    <TextBlock x:Name="ZzzText1" Text="z" FontFamily="Comic Sans MS" FontSize="36" FontWeight="Bold" Foreground="#81C784" Canvas.Left="10" Canvas.Top="70" Opacity="0">
+                        <TextBlock.RenderTransform><TranslateTransform x:Name="ZzzShift1" /></TextBlock.RenderTransform>
+                    </TextBlock>
+                    <TextBlock x:Name="ZzzText2" Text="Z" FontFamily="Comic Sans MS" FontSize="48" FontWeight="Bold" Foreground="#66BB6A" Canvas.Left="45" Canvas.Top="35" Opacity="0">
+                        <TextBlock.RenderTransform><TranslateTransform x:Name="ZzzShift2" /></TextBlock.RenderTransform>
+                    </TextBlock>
+                    <TextBlock x:Name="ZzzText3" Text="Z" FontFamily="Comic Sans MS" FontSize="62" FontWeight="Bold" Foreground="#4CAF50" Canvas.Left="90" Canvas.Top="0" Opacity="0">
+                        <TextBlock.RenderTransform><TranslateTransform x:Name="ZzzShift3" /></TextBlock.RenderTransform>
+                    </TextBlock>
+                </Canvas>
+
+            </Canvas>
+        </Viewbox>
+
+        <!-- Chat input box (toggled by single-click on Grimlo or menu) -->
+        <Border x:Name="ChatInputContainer"
+                Grid.Row="2"
+                Visibility="Collapsed"
+                Background="#FAF8F5"
+                BorderBrush="#2F5D2A"
+                BorderThickness="2"
+                CornerRadius="10"
+                Padding="8,5"
+                VerticalAlignment="Top"
+                Margin="10,4,10,6">
+            <Grid>
+                <TextBlock Text="Ask Grimlo... (/think, /look, /help)"
+                           Foreground="#888888"
+                           FontFamily="Comic Sans MS"
+                           FontSize="12"
+                           VerticalAlignment="Center"
+                           Margin="2,0,0,0"
+                           IsHitTestVisible="False">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Text, ElementName=ChatInput}" Value="">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <TextBox x:Name="ChatInput"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         FontFamily="Comic Sans MS"
+                         FontSize="12"
+                         Foreground="#222222"
+                         VerticalAlignment="Center"
+                         KeyDown="ChatInput_KeyDown" />
+            </Grid>
+        </Border>
+
+        <!-- Speech controls (visible while speaking/streaming so you can pause or mute him) -->
+        <Border x:Name="SpeechControlsContainer"
+                Grid.Row="2"
+                Visibility="Collapsed"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Margin="0,4,0,10">
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="PauseButton"
+                        Content="⏸ Pause"
+                        Click="PauseButton_Click"
+                        Background="#FAF8F5"
+                        Foreground="#2F5D2A"
+                        BorderBrush="#2F5D2A"
+                        BorderThickness="2"
+                        FontFamily="Comic Sans MS"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Padding="10,4"
+                        Margin="0,0,6,0"
+                        Cursor="Hand">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="12" />
+                        </Style>
+                    </Button.Resources>
+                </Button>
+                <Button x:Name="QuietButton"
+                        Content="🤫 Quiet"
+                        Click="QuietButton_Click"
+                        Background="#FAF8F5"
+                        Foreground="#2F5D2A"
+                        BorderBrush="#2F5D2A"
+                        BorderThickness="2"
+                        FontFamily="Comic Sans MS"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Padding="10,4"
+                        Cursor="Hand">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="12" />
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

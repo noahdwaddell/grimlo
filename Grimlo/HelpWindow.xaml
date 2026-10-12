@@ -1,0 +1,264 @@
+<Window x:Class="Grimlo.HelpWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Grimlo - Help &amp; Commands"
+        Width="520" Height="580"
+        WindowStartupLocation="CenterScreen"
+        Topmost="True"
+        ResizeMode="NoResize"
+        Background="#1E1E24"
+        Foreground="#ECECF1"
+        FontFamily="Segoe UI"
+        FontSize="13">
+
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#E0E0E6" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+        <Style x:Key="CommandTag" TargetType="Border">
+            <Setter Property="Background" Value="#2A382C" />
+            <Setter Property="BorderBrush" Value="#4CAF50" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="5,2" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="CommandText" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Consolas" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="#A5D6A7" />
+        </Style>
+        <Style x:Key="SectionCard" TargetType="Border">
+            <Setter Property="Background" Value="#25252D" />
+            <Setter Property="BorderBrush" Value="#383844" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="14,12" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,14">
+            <TextBlock Text="🧙‍♂️ Grimlo's Guide &amp; Commands"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Foreground="#81C784" />
+            <TextBlock Text="Everything you need to know about interacting with your resident desktop gremlin."
+                       FontSize="12"
+                       Foreground="#9E9EA8"
+                       Margin="0,3,0,0" />
+        </StackPanel>
+
+        <!-- Scrollable content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,-6,0" Padding="0,0,6,0">
+            <StackPanel>
+                <!-- Chat Commands Card -->
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="💬 Chat Slash Commands" FontWeight="Bold" FontSize="14" Foreground="#ECECF1" Margin="0,0,0,10" />
+                        <TextBlock Text="Click Grimlo to open the chat bar, then type any of these and press Enter:" FontSize="12" Foreground="#AAAAAA" Margin="0,0,0,8" />
+
+                        <!-- /think -->
+                        <Grid Margin="0,3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource CommandTag}">
+                                <TextBlock Text="/think [prompt]" Style="{StaticResource CommandText}" />
+                            </Border>
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="Lifts brevity limit for deep contemplation, elaborate treatises, &amp; monologues." FontSize="12" />
+                        </Grid>
+
+                        <!-- /long -->
+                        <Grid Margin="0,3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource CommandTag}">
+                                <TextBlock Text="/long [prompt]" Style="{StaticResource CommandText}" />
+                            </Border>
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="Alias for /think — delivers an in-depth, multi-paragraph response." FontSize="12" />
+                        </Grid>
+
+                        <!-- /look -->
+                        <Grid Margin="0,3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource CommandTag}">
+                                <TextBlock Text="/look [prompt]" Style="{StaticResource CommandText}" />
+                            </Border>
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="Screenshots your whole desktop &amp; gives his visual judgment." FontSize="12" />
+                        </Grid>
+
+                        <!-- /judge -->
+                        <Grid Margin="0,3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource CommandTag}">
+                                <TextBlock Text="/judge" Style="{StaticResource CommandText}" />
+                            </Border>
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="Inspects and harshly roasts your active foreground window." FontSize="12" />
+                        </Grid>
+
+                        <!-- /listen -->
+                        <Grid Margin="0,3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource CommandTag}">
+                                <TextBlock Text="/listen" Style="{StaticResource CommandText}" />
+                            </Border>
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="Critiques currently playing music (Spotify, browser, media players)." FontSize="12" />
+                        </Grid>
+
+                        <!-- /sleep -->
+                        <Grid Margin="0,3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource CommandTag}">
+                                <TextBlock Text="/sleep" Style="{StaticResource CommandText}" />
+                            </Border>
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="Puts Grimlo to sleep immediately (with snores and 'z's)." FontSize="12" />
+                        </Grid>
+
+                        <!-- /tap -->
+                        <Grid Margin="0,3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource CommandTag}">
+                                <TextBlock Text="/tap" Style="{StaticResource CommandText}" />
+                            </Border>
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="Taps the monitor glass from the inside with audio SFX." FontSize="12" />
+                        </Grid>
+
+                        <!-- /shake -->
+                        <Grid Margin="0,3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource CommandTag}">
+                                <TextBlock Text="/shake" Style="{StaticResource CommandText}" />
+                            </Border>
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="Triggers dizzy spin and complaints." FontSize="12" />
+                        </Grid>
+
+                        <!-- /wander -->
+                        <Grid Margin="0,3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource CommandTag}">
+                                <TextBlock Text="/wander" Style="{StaticResource CommandText}" />
+                            </Border>
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="Takes an animated patrol along your taskbar to stretch his legs." FontSize="12" />
+                        </Grid>
+
+                        <!-- /clear -->
+                        <Grid Margin="0,3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource CommandTag}">
+                                <TextBlock Text="/clear" Style="{StaticResource CommandText}" />
+                            </Border>
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="Wipes his short-term conversation memory." FontSize="12" />
+                        </Grid>
+
+                        <!-- /help -->
+                        <Grid Margin="0,3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource CommandTag}">
+                                <TextBlock Text="/help" Style="{StaticResource CommandText}" />
+                            </Border>
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="Speaks a quick summary of available commands." FontSize="12" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Interactions & Gestures Card -->
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="🖱️ Physical Interactions &amp; Gestures" FontWeight="Bold" FontSize="14" Foreground="#ECECF1" Margin="0,0,0,10" />
+                        <TextBlock Text="• Left-Click Grimlo: Toggles the chat input bar (Esc closes it)." Margin="0,2" FontSize="12" />
+                        <TextBlock Text="• Left-Click &amp; Drag: Reposition Grimlo anywhere on your desktop." Margin="0,2" FontSize="12" />
+                        <TextBlock Text="• Shake Him: Drag rapidly back and forth to make him dizzy with sound effects." Margin="0,2" FontSize="12" />
+                        <TextBlock Text="• Sleep &amp; Snooze: When idle, eyelids droop at 8m, and he sleeps deeply at 14m. Click him to startle him awake!" Margin="0,2" FontSize="12" />
+                        <TextBlock Text="• Right-Click Menu: Access quick actions, settings, and tray controls." Margin="0,2" FontSize="12" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Speech & Media Card -->
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="⏸️ Speech &amp; Controls" FontWeight="Bold" FontSize="14" Foreground="#ECECF1" Margin="0,0,0,10" />
+                        <TextBlock Text="• Speech Controls: 'Pause' and 'Quiet' buttons appear right under Grimlo while he is speaking." Margin="0,2" FontSize="12" />
+                        <TextBlock Text="• Close Bubble Button: Click the ✕ in the speech bubble's upper-right to hide text early while TTS continues." Margin="0,2" FontSize="12" />
+                        <TextBlock Text="• Background Awareness: Grimlo automatically notices late-night sessions, low battery, and changes in background apps/music." Margin="0,2" FontSize="12" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Credits & License Card -->
+                <Border Style="{StaticResource SectionCard}">
+                    <StackPanel>
+                        <TextBlock Text="✨ Credits &amp; License" FontWeight="Bold" FontSize="14" Foreground="#ECECF1" Margin="0,0,0,8" />
+                        <TextBlock FontSize="12" Margin="0,2">
+                            <Run Text="• App designed by " />
+                            <Run Text="Noah Waddell" FontWeight="SemiBold" />
+                            <Run Text=" of " />
+                            <Hyperlink NavigateUri="https://ellijaylabs.com" RequestNavigate="Hyperlink_RequestNavigate" Foreground="#81C784">ellijaylabs.com</Hyperlink>
+                        </TextBlock>
+                        <TextBlock Text="• App code is free and open-source under the MIT License." FontSize="12" Margin="0,2" />
+                        <TextBlock Text="• Original artwork created by Kris Sanford and may not be duplicated or sold." FontSize="12" Margin="0,2" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Footer / Close -->
+        <Button Grid.Row="2"
+                Content="Got It!"
+                HorizontalAlignment="Right"
+                Margin="0,14,0,0"
+                Padding="22,6"
+                Background="#2E7D32"
+                Foreground="White"
+                FontWeight="SemiBold"
+                BorderThickness="0"
+                Cursor="Hand"
+                Click="CloseButton_Click">
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="6" />
+                </Style>
+            </Button.Resources>
+        </Button>
+    </Grid>
+</Window>
