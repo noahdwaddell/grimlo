@@ -101,16 +101,19 @@ QUICK START:
 
 CHAT SLASH COMMANDS:
 Click Grimlo to open the chat bar, type any command, and press Enter:
-  /look [prompt] - Screen capture & visual critique of your desktop.
-  /judge         - Harsh roast of your active foreground window.
-  /listen        - Critique whatever music or audio is playing.
-  /wander        - Takes an animated patrol along your taskbar.
-  /sleep         - Put Grimlo to sleep immediately.
-  /tap           - Tap the monitor glass from the inside.
-  /shake         - Make Grimlo dizzy with complaining.
-  /clear         - Wipe conversation memory.
-  /help          - Recite available commands.
-  Esc            - Close the chat bar.
+  /think [prompt] - Deep contemplation and elaborate monologues.
+  /long [prompt]  - Alias for /think (in-depth multi-paragraph response).
+  /look [prompt]  - Screen capture & visual critique of your desktop.
+  /judge          - Harsh roast of your active foreground window.
+  /listen         - Critique whatever music or audio is playing.
+  /wander         - Takes an animated patrol along your taskbar.
+  /sleep          - Put Grimlo to sleep immediately.
+  /tap            - Tap the monitor glass from the inside.
+  /shake          - Make Grimlo dizzy with complaining.
+  /clear          - Wipe conversation memory.
+  /help           - Recite available commands.
+  /commands       - Alias for /help.
+  Esc             - Close the chat bar.
 
 AI SETUP (FREE API KEY):
 Right-click Grimlo -> Settings...
@@ -124,6 +127,11 @@ CONTROLS & SHORTCUTS:
 - Click the 'X' in the top-right of the speech bubble to dismiss text early.
 - Right-click Grimlo -> Help & Commands for the full guide.
 
+CREDITS & LICENSE:
+- App designed by Noah Waddell of ellijaylabs.com (MIT License).
+- Original character artwork created by Kris Sanford (All Rights Reserved).
+- See LICENSE file for full legal terms.
+
 SYSTEM REQUIREMENTS:
 - Windows 10 or Windows 11 (64-bit)
 $(if (!$SelfContained) { "- Microsoft .NET 8 Desktop Runtime (https://dotnet.microsoft.com/download/dotnet/8.0)" })
@@ -132,6 +140,12 @@ Enjoy your new resident desktop gremlin!
 ============================================================
 "@
 Set-Content -Path (Join-Path $stageDir "README.txt") -Value $readmeContent -Encoding utf8
+
+# Copy LICENSE into distribution folder
+$licenseSrc = Join-Path $rootDir "LICENSE"
+if (Test-Path $licenseSrc) {
+    Copy-Item -Path $licenseSrc -Destination (Join-Path $stageDir "LICENSE") -Force
+}
 
 # 6. Create Distribution Zip Archive
 Write-Host "[5/5] Creating distribution archive: $zipPath..." -ForegroundColor Cyan
